@@ -1,0 +1,57 @@
+@use "./destyle.css";
+
+html,
+body,
+#app {
+  width: 100%;
+  height: 100%;
+}
+
+#app {
+  display: grid;
+  grid-template:
+    "h" auto
+    "m" 1fr
+    "f" auto;
+
+  > header {
+    grid-area: h;
+  }
+
+  > main {
+    grid-area: m;
+
+    label {
+      display: block;
+    }
+  }
+
+  > footer {
+    grid-area: f;
+  }
+}
+
+input[type=search] {
+  border: 4px solid darkgreen;
+  padding: 0.5em;
+  border-radius: 1000px;
+}
+
+button {
+  color: white;
+  background-color: darkgreen;
+  padding: 0.5em;
+  border-radius: 1000px;
+
+  &:disabled {
+    background-color: gray;
+  }
+}
+
+.description {
+  font-size: .7em;
+}
+
+a {
+  color: darkgreen;
+}
