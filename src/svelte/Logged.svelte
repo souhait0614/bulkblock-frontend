@@ -143,9 +143,6 @@
 
 <header>
   <h1>Bulk Block</h1>
-  <button on:click={logout}>
-    <i>logout</i>
-  </button>
 </header>
 <main id="logged">
   {#if promiseUsers !== null}
