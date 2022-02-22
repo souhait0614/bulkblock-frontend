@@ -7,7 +7,7 @@
 
   //NOTE テスト用
   import testdata from "../../testdata.json"
-  const localDebug = true
+  const localDebug = false
 
   const baseUrl = "https://hisubway.online/articles/bulkblock/"
   const headerUrl = baseUrl + "header.html"
