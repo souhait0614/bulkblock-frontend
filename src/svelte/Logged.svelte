@@ -7,7 +7,12 @@
 
   //NOTE テスト用
   import testdata from "../../testdata.json"
-  const localDebug = false
+  const localDebug = true
+
+  const baseUrl = "https://hisubway.online/articles/bulkblock/"
+  const headerUrl = baseUrl + "header.html"
+  const footerUrl = baseUrl + "footer.html"
+  const sideUrl = baseUrl + "side.html"
 
   let searchText = ""
 
@@ -78,8 +83,10 @@
   }
   // 対象のユーザーを取得したりする
   let creating = false
+  let selectedUsers = 0
   async function createUsers() {
     creating = true
+    selectedUsers = 0
     promiseUsers = new Promise<Users>(async (resolve, reject) => {
       try {
         Promise.all([search(), getFollowing()])
@@ -94,14 +101,15 @@
                 cheched: !isFollowing,
               }
             }
-            creating = false
             resolve(result)
           })
           .catch((err) => {
             reject(err)
           })
+          .finally(() => (creating = false))
       } catch (error) {
         reject(error)
+        creating = false
       }
     })
   }
@@ -142,7 +150,8 @@
 </script>
 
 <header>
-  <h1>Bulk Block</h1>
+  <h1>BulkBlock</h1>
+  <iframe src={headerUrl} />
 </header>
 <main id="logged">
   {#if promiseUsers !== null}
@@ -161,85 +170,94 @@
       <i>search</i>
     </button>
   </div>
-  {#if promiseBlockUsers !== null}
-    {#await promiseBlockUsers}
-      <p>ブロック中: {blockProgress} / {blockIds.length}</p>
-    {:then blockUsers}
-      <p>ブロック完了: {blockProgress} / {blockIds.length}</p>
-    {/await}
-  {/if}
-  {#if promiseUsers !== null}
-    {#await promiseUsers then users}
-      <button
-        transition:slide={duration}
-        class="block"
-        on:click={block}
-        disabled={!Object.values(users).some((user) => user.cheched) ||
-          creating}>ブロックする</button
+  <div class="sticky_container">
+    <div class="top_cover">
+      <button class="block" on:click={block} disabled={!selectedUsers}
+        >ブロックする</button
       >
-      <div class="users_container" transition:fade={duration}>
-        <header>
-          <span>
-            {#key Object.values(users).filter((user) => user.cheched).length}
-              <span
-              in:fade={duration}
-                >{Object.values(users).filter((user) => user.cheched)
-                  .length}</span
-              >
-            {/key}
+    </div>
+    {#if promiseBlockUsers !== null}
+      {#await promiseBlockUsers}
+        <p>ブロック中: {blockProgress} / {blockIds.length}</p>
+      {:then}
+        <p>ブロック完了: {blockProgress} / {blockIds.length}</p>
+      {/await}
+    {/if}
+    {#if promiseUsers !== null}
+      {#await promiseUsers then users}
+        {(() => {
+          selectedUsers = Object.values(users).filter(
+            (user) => user.cheched
+          ).length
+          return ""
+        })()}
+        <div class="users_container" transition:fade={duration}>
+          <header>
             <span>
-              / {Object.keys(users).length} 人を選択済み
+              {#key selectedUsers}
+                <span in:fade={duration}>{selectedUsers}</span>
+              {/key}
+              <span>
+                / {Object.keys(users).length} 人を選択済み
+              </span>
             </span>
-          </span>
-          {#if Object.values(users).some((user) => !user.cheched)}
-            <button
-              on:click={() => {
-                Object.keys(users).forEach((key) => {
-                  users[key].cheched = true
-                })
-              }}
-            >
-              <i>done_all</i>
-            </button>
-          {:else}
-            <button
-              on:click={() => {
-                Object.keys(users).forEach((key) => {
-                  users[key].cheched = false
-                })
-              }}
-            >
-              <i>remove_done</i>
-            </button>
-          {/if}
-        </header>
-        {#each Object.values(users) as user}
-          {#if isFullUser(user.data)}
-            <label>
-              <img
-                src={user.data.profile_image_url_https}
-                alt={user.data.screen_name}
-              />
-              <span class="username">
-                {user.data.name}
-                <a
-                  href={"https://twitter.com/" + user.data.screen_name}
-                  target="_blank"
-                  rel="noopener noreferrer"
+            {#if Object.values(users).some((user) => !user.cheched)}
+              <button
+                on:click={() => {
+                  Object.keys(users).forEach((key) => {
+                    users[key].cheched = true
+                  })
+                }}
+              >
+                <i>done_all</i>
+              </button>
+            {:else}
+              <button
+                on:click={() => {
+                  Object.keys(users).forEach((key) => {
+                    users[key].cheched = false
+                  })
+                }}
+              >
+                <i>remove_done</i>
+              </button>
+            {/if}
+          </header>
+          {#each Object.values(users) as user}
+            {#if isFullUser(user.data)}
+              <label>
+                <img
+                  src={user.data.profile_image_url_https}
+                  alt={user.data.screen_name}
+                />
+                <span class="username">
+                  {user.data.name}
+                  <a
+                    href={"https://twitter.com/" + user.data.screen_name}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    @{user.data.screen_name}
+                  </a>
+                </span>
+                <span class="description">
+                  {user.data.description}
+                </span>
+                <i class="check"
+                  >{user.cheched ? "check_box" : "check_box_outline_blank"}</i
                 >
-                  @{user.data.screen_name}
-                </a>
-              </span>
-              <span class="description">
-                {user.data.description}
-              </span>
-              <input type="checkbox" bind:checked={user.cheched} />
-            </label>
-          {/if}
-        {/each}
-      </div>
-    {:catch error}
-      <p>{error.message}</p>
-    {/await}
-  {/if}
+                <input type="checkbox" bind:checked={user.cheched} />
+              </label>
+            {/if}
+          {/each}
+        </div>
+      {:catch error}
+        <p>{error.message}</p>
+      {/await}
+    {/if}
+  </div>
 </main>
+<footer>
+  <iframe src={footerUrl} />
+</footer>
+<iframe src={sideUrl} />
