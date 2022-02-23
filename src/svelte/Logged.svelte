@@ -9,7 +9,7 @@
 
   //NOTE テスト用
   import testdata from "../../testdata.json"
-  const localDebug = false
+  const localDebug = true
 
   const baseUrl = "https://hisubway.online/articles/bulkblock/"
   const headerUrl = baseUrl + "header/"
@@ -158,7 +158,7 @@
       setTimeout(() => {
         blocking = false
         promiseBlockUsers = null
-      }, 1500)
+      }, 2400)
       resolve(result)
     })
   }
@@ -175,7 +175,7 @@
 </header>
 <main id="logged">
   {#if promiseBlockUsers !== null}
-    <div class="block_progress" transition:slide={duration}>
+    <div class="block_progress" transition:slide={{duration:duration.duration*2}}>
       <ProgressCircle max={blockIds.length} value={blockProgress}>
         {#await promiseBlockUsers}
           <span class="block_progress_text" in:fade={duration}
