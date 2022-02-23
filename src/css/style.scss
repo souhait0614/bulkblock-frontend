@@ -49,8 +49,6 @@
     --color-text: #ffffff;
     --color-text-mute: #9e9e9e;
   }
-
-  scroll-behavior: smooth;
 }
 
 ::-webkit-scrollbar {
@@ -123,7 +121,7 @@ button {
 }
 
 iframe,
-button{
+button {
   user-select: none;
 }
 
@@ -316,6 +314,40 @@ button{
 
     input[type="checkbox"] {
       display: none;
+    }
+  }
+}
+
+.block_progress {
+  height: 400px;
+  --progress-color: var(--color-accent);
+  --progress-width: 0.3rem;
+  --progress-trackcolor: transparent;
+  --progress-trackwidth: 0.3rem;
+  overflow: hidden;
+
+  > div {
+    .block_progress_text {
+      left: 50%;
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 4rem;
+
+      > span {
+        font-size: 6rem;
+      }
+    }
+
+    .block_complete_icon {
+      height: 10rem;
+      aspect-ratio: 1;
+      left: 50%;
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 7.5rem;
+      fill: var(--color-accent);
     }
   }
 }

@@ -5,14 +5,16 @@
   import { fade, slide } from "svelte/transition"
   const duration = { duration: 300 }
 
+  import ProgressCircle from "svelte-progresscircle"
+
   //NOTE テスト用
   import testdata from "../../testdata.json"
-  const localDebug = false
+  const localDebug = location.hostname == "localhost"
 
   const baseUrl = "https://hisubway.online/articles/bulkblock/"
-  const headerUrl = baseUrl + "header.html"
-  const footerUrl = baseUrl + "footer.html"
-  const sideUrl = baseUrl + "side.html"
+  const headerUrl = baseUrl + "header/"
+  const footerUrl = baseUrl + "footer/"
+  const sideUrl = baseUrl + "side/"
 
   let searchText = ""
 
@@ -114,22 +116,36 @@
     })
   }
 
+  let blocking = false
   let blockIds = []
   let blockProgress = 0
   let promiseBlockUsers: Promise<BlockUsers> = null
   async function block() {
-    blockIds = Object.values(await promiseUsers)
-      .map((val) => {
-        if (!val.cheched) return
-        return val.data.id_str
+    blocking = true
+    const promiseUsersCopy = { ...(await promiseUsers) }
+    promiseUsers = null
+    selectedUsers = 0
+    blockIds = Object.values(promiseUsersCopy)
+      .map(({ cheched, data }) => {
+        if (!cheched) return
+        return data.id_str
       })
       .filter((e) => e)
     promiseBlockUsers = new Promise<BlockUsers>(async (resolve) => {
       blockProgress = 0
-      let result: BlockUsers = {}
+      const result: BlockUsers = {}
       await Promise.all(
         blockIds.map(async (id) => {
-          const data = await post("/block?id=" + id)
+          const data = localDebug
+            ? new Response(
+                await new Promise((resolve) =>
+                  setTimeout(
+                    () => resolve(JSON.stringify(testdata.following)),
+                    1000
+                  )
+                )
+              )
+            : await post("/block?id=" + id)
           const { ok, statusText } = data
           result[id] = {
             data: data.ok ? await data.json() : undefined,
@@ -139,6 +155,10 @@
           blockProgress++
         })
       )
+      setTimeout(() => {
+        blocking = false
+        promiseBlockUsers = null
+      }, 1500)
       resolve(result)
     })
   }
@@ -151,9 +171,41 @@
 
 <header>
   <h1>BulkBlock</h1>
-  <iframe src={headerUrl} />
+  <iframe src={headerUrl} title="header" />
 </header>
 <main id="logged">
+  {#if promiseBlockUsers !== null}
+    <div class="block_progress" transition:slide={duration}>
+      <ProgressCircle max={blockIds.length} value={blockProgress}>
+        {#await promiseBlockUsers}
+          <span class="block_progress_text" in:fade={duration}
+            ><span>{Math.round((blockProgress / blockIds.length) * 100)}</span
+            >%</span
+          >
+        {:then blockUsers}
+          <svg
+            class="block_complete_icon"
+            transition:slide={duration}
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            ><path d="M0 0h24v24H0V0z" fill="none" /><path
+              d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"
+            /></svg
+          >
+        {/await}
+      </ProgressCircle>
+    </div>
+    {#await promiseBlockUsers}
+      <div class="users_count" in:slide={duration}>
+        <span>{blockIds.length}</span>人をブロックしています……
+      </div>
+    {:then blockUsers}
+      <div class="users_count" in:fade={duration} out:slide={duration}>
+        <span>{Object.values(blockUsers).filter(({ ok }) => ok).length}</span
+        >人をブロックしました
+      </div>
+    {/await}
+  {/if}
   {#if promiseUsers !== null}
     {#await promiseUsers then users}
       <div class="users_count" transition:slide={duration}>
@@ -165,29 +217,39 @@
     <input type="search" bind:value={searchText} />
     <button
       on:click={createUsers}
-      disabled={localDebug ? creating : searchText === "" || creating}
+      disabled={localDebug
+        ? creating || blocking
+        : searchText === "" || creating || blocking}
     >
       <i>search</i>
     </button>
   </div>
   <div class="sticky_container">
     <div class="top_cover">
-      <button class="block" on:click={block} disabled={!selectedUsers}
-        >ブロックする</button
+      <button
+        class="block"
+        on:click={() => {
+          const scroll = document.body.animate(
+            [{ marginTop: `-${window.pageYOffset - 1}px` }, { marginTop: 0 }],
+            {
+              duration: duration.duration,
+              easing: "ease-in-out",
+            }
+          )
+          window.scroll(0, 0)
+          blocking = true
+          scroll.addEventListener("finish", () => {
+            block()
+          })
+        }}
+        disabled={!selectedUsers || blocking}>ブロックする</button
       >
     </div>
-    {#if promiseBlockUsers !== null}
-      {#await promiseBlockUsers}
-        <p>ブロック中: {blockProgress} / {blockIds.length}</p>
-      {:then}
-        <p>ブロック完了: {blockProgress} / {blockIds.length}</p>
-      {/await}
-    {/if}
     {#if promiseUsers !== null}
       {#await promiseUsers then users}
         {(() => {
           selectedUsers = Object.values(users).filter(
-            (user) => user.cheched
+            ({ cheched }) => cheched
           ).length
           return ""
         })()}
@@ -201,7 +263,7 @@
                 / {Object.keys(users).length} 人を選択済み
               </span>
             </span>
-            {#if Object.values(users).some((user) => !user.cheched)}
+            {#if Object.values(users).some(({ cheched }) => !cheched)}
               <button
                 on:click={() => {
                   Object.keys(users).forEach((key) => {
@@ -223,30 +285,31 @@
               </button>
             {/if}
           </header>
-          {#each Object.values(users) as user}
-            {#if isFullUser(user.data)}
+          {#each Object.values(users) as { data, cheched }}
+            {#if isFullUser(data)}
               <label>
                 <img
-                  src={user.data.profile_image_url_https}
-                  alt={user.data.screen_name}
+                  loading="lazy"
+                  src={data.profile_image_url_https}
+                  alt={data.screen_name}
                 />
                 <span class="username">
-                  {user.data.name}
+                  {data.name}
                   <a
-                    href={"https://twitter.com/" + user.data.screen_name}
+                    href={"https://twitter.com/" + data.screen_name}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    @{user.data.screen_name}
+                    @{data.screen_name}
                   </a>
                 </span>
                 <span class="description">
-                  {user.data.description}
+                  {data.description}
                 </span>
                 <i class="check"
-                  >{user.cheched ? "check_box" : "check_box_outline_blank"}</i
+                  >{cheched ? "check_box" : "check_box_outline_blank"}</i
                 >
-                <input type="checkbox" bind:checked={user.cheched} />
+                <input type="checkbox" bind:checked={cheched} />
               </label>
             {/if}
           {/each}
@@ -258,6 +321,6 @@
   </div>
 </main>
 <footer>
-  <iframe src={footerUrl} />
+  <iframe src={footerUrl} title="footer" />
 </footer>
-<iframe src={sideUrl} />
+<iframe src={sideUrl} title="side" />

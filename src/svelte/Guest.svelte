@@ -1,7 +1,7 @@
 <script lang="ts" context="module">
   const baseUrl = "https://hisubway.online/articles/bulkblock/"
-  const footerUrl = baseUrl + "footer.html"
-  const sideUrl = baseUrl + "side.html"
+  const footerUrl = baseUrl + "footer/"
+  const sideUrl = baseUrl + "side/"
 
   let href = "/login"
   if (location.host === "hisubway.online")
@@ -21,6 +21,6 @@
   <a class="block" {href}>Twitterでログイン</a>
 </main>
 <footer>
-  <iframe src={footerUrl} />
+  <iframe src={footerUrl} title="footer" />
 </footer>
-<iframe src={sideUrl} />
+<iframe src={sideUrl} title="side" />

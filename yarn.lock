@@ -656,6 +656,11 @@ svelte-preprocess@^4.0.0, svelte-preprocess@^4.9.8:
     sorcery "^0.10.0"
     strip-indent "^3.0.0"
 
+svelte-progresscircle@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/svelte-progresscircle/-/svelte-progresscircle-0.3.0.tgz#2f294c5d5dc5592d96bb93702bf5b5ac023be362"
+  integrity sha512-SEr48vMgqVGW5taNiU26uvLitBk7DfjC3JmUEulqs3rc9CiQ1eGW0THKdxJyX4J8G0/+2lqi0sK/Jl/XjYyApQ==
+
 svelte@^3.44.0:
   version "3.46.4"
   resolved "https://registry.yarnpkg.com/svelte/-/svelte-3.46.4.tgz#0c46bc4a3e20a2617a1b7dc43a722f9d6c084a38"

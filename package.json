@@ -16,6 +16,7 @@
     "svelte": "^3.44.0",
     "svelte-check": "^2.2.7",
     "svelte-preprocess": "^4.9.8",
+    "svelte-progresscircle": "^0.3.0",
     "tslib": "^2.3.1",
     "twitter-d": "^0.4.0",
     "typescript": "^4.5.4",
