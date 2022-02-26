@@ -21,7 +21,7 @@
   export let cookie
 
   function post(url) {
-    const u = new URL(location.origin + url)
+    const u = new URL("https://blocker.hmpf.club" + url)
     u.searchParams.set("access_token", cookie["access_token"])
     u.searchParams.set("access_token_secret", cookie["access_token_secret"])
     url = u.toString()
@@ -30,7 +30,7 @@
     })
   }
   function get(url) {
-    const u = new URL(location.origin + url)
+    const u = new URL("https://blocker.hmpf.club" + url)
     u.searchParams.set("access_token", cookie["access_token"])
     u.searchParams.set("access_token_secret", cookie["access_token_secret"])
     url = u.toString()
@@ -45,18 +45,23 @@
     return new Promise<{
       statuses: Status[]
     }>(async (resolve, reject) => {
-      const data = localDebug
-        ? //NOTE テスト用
-          new Response(
-            await new Promise((resolve) =>
-              setTimeout(() => resolve(JSON.stringify(testdata.search)), 1000)
+      try {
+        const data = localDebug
+          ? //NOTE テスト用
+            new Response(
+              await new Promise((resolve) =>
+                setTimeout(() => resolve(JSON.stringify(testdata.search)), 1000)
+              )
             )
-          )
-        : await get("/search?q=" + encodeURIComponent(searchText))
-      if (data.ok) {
-        resolve(data.json())
-      } else {
-        reject(Error("データの取得に失敗しました: " + data.status))
+          : await get("/search?q=" + encodeURIComponent(searchText))
+        const json = data.json()
+        if (data.ok && !("errors" in json)) {
+          resolve(json)
+        } else {
+          reject(json)
+        }
+      } catch (error) {
+        reject(error)
       }
     })
   }
@@ -65,21 +70,26 @@
     return new Promise<{
       ids: string[]
     }>(async (resolve, reject) => {
-      const data = localDebug
-        ? //NOTE テスト用
-          new Response(
-            await new Promise((resolve) =>
-              setTimeout(
-                () => resolve(JSON.stringify(testdata.following)),
-                1000
+      try {
+        const data = localDebug
+          ? //NOTE テスト用
+            new Response(
+              await new Promise((resolve) =>
+                setTimeout(
+                  () => resolve(JSON.stringify(testdata.following)),
+                  1000
+                )
               )
             )
-          )
-        : await get("/following")
-      if (data.ok) {
-        resolve(data.json())
-      } else {
-        reject(Error("データの取得に失敗しました: " + data.status))
+          : await get("/following")
+        const json = data.json()
+        if (data.ok && !("errors" in json)) {
+          resolve(json)
+        } else {
+          reject(json)
+        }
+      } catch (error) {
+        reject(error)
       }
     })
   }
@@ -145,7 +155,7 @@
                   )
                 )
               )
-            : await post("/block?id=" + id)
+            : await post("blocker.hmpf.club/block?id=" + id)
           const { ok, statusText } = data
           result[id] = {
             data: data.ok ? await data.json() : undefined,
@@ -162,20 +172,19 @@
       resolve(result)
     })
   }
-  function logout() {
-    document.cookie = "access_token=;max-age=-1;"
-    document.cookie = "access_token_secret=;max-age=-1;"
-    location.reload()
-  }
 </script>
 
 <header>
   <h1>BulkBlock</h1>
   <iframe src={headerUrl} title="header" />
 </header>
+
 <main id="logged">
   {#if promiseBlockUsers !== null}
-    <div class="block_progress" transition:slide={{duration:duration.duration*2}}>
+    <div
+      class="block_progress"
+      transition:slide={{ duration: duration.duration * 2 }}
+    >
       <ProgressCircle max={blockIds.length} value={blockProgress}>
         {#await promiseBlockUsers}
           <span class="block_progress_text" in:fade={duration}
@@ -213,17 +222,36 @@
       </div>
     {/await}
   {/if}
-  <div class="search_box">
-    <input type="search" bind:value={searchText} />
+  <form
+    class="search_box"
+    on:submit={(e) => {
+      e.preventDefault()
+      createUsers()
+    }}
+  >
+    <!-- svelte-ignore a11y-autofocus -->
+    <input type="search" bind:value={searchText} autofocus />
     <button
-      on:click={createUsers}
+      class="search"
       disabled={localDebug
         ? creating || blocking
         : searchText === "" || creating || blocking}
     >
       <i>search</i>
     </button>
-  </div>
+    {#if searchText}
+      <button
+      transition:fade={duration}
+        class="clear"
+        on:click={(e) => {
+          e.preventDefault()
+          searchText = ""
+        }}
+      >
+        <i>clear</i>
+      </button>
+    {/if}
+  </form>
   <div class="sticky_container">
     <div class="top_cover">
       <button
@@ -287,7 +315,23 @@
           </header>
           {#each Object.values(users) as { data, cheched }}
             {#if isFullUser(data)}
-              <label>
+              <button
+                on:click={() => (cheched = !cheched)}
+                on:focus={(e) => {
+                  const elem = e.currentTarget
+                  const clientTop = elem.getBoundingClientRect().top
+                  const topCoverClientHeight = 16 * 5
+                  const usersContainerClientHeight = 16 * 2 + 22
+                  if (
+                    clientTop <=
+                    topCoverClientHeight + usersContainerClientHeight
+                  )
+                    window.scrollTo(
+                      0,
+                      window.pageYOffset + clientTop - window.innerHeight / 1.5
+                    )
+                }}
+              >
                 <img
                   loading="lazy"
                   src={data.profile_image_url_https}
@@ -309,17 +353,19 @@
                 <i class="check"
                   >{cheched ? "check_box" : "check_box_outline_blank"}</i
                 >
-                <input type="checkbox" bind:checked={cheched} />
-              </label>
+              </button>
             {/if}
           {/each}
         </div>
       {:catch error}
-        <p>{error.message}</p>
+        <p class="error_container" transition:slide={duration}>
+          エラーが発生しました。<br />しばらくしてからもう一度お試しください。
+        </p>
       {/await}
     {/if}
   </div>
 </main>
+
 <footer>
   <iframe src={footerUrl} title="footer" />
 </footer>

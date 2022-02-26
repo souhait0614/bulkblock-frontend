@@ -12,6 +12,14 @@
   const cookie = cookieObj(document.cookie)
 
   const logged = "access_token" in cookie && "access_token_secret" in cookie
+
+  const url = new URL(location.href)
+
+  if (url.searchParams.has("logout")) {
+    document.cookie = "access_token=;max-age=-1;"
+    document.cookie = "access_token_secret=;max-age=-1;"
+    location.href = location.origin
+  }
 </script>
 
 {#if logged}

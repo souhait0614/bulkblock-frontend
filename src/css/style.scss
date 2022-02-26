@@ -5,17 +5,7 @@
   font-style: normal;
   font-weight: 400;
   src: local("HarmonyOS Sans"),
-    url("../../src/fonts/HarmonyOS_Sans/HarmonyOS_Sans_Regular.woff2")
-      format("woff2");
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Noto Sans JP";
-  font-style: normal;
-  font-weight: 400;
-  src: local("Noto Sans JP"),
-    url("../../src/fonts/NotoSans/NotoSansJP-Regular.woff2") format("woff2");
+    url("../fonts/HarmonyOS_Sans/HarmonyOS_Sans_Regular.woff2") format("woff2");
   font-display: swap;
 }
 
@@ -24,8 +14,7 @@
   font-style: normal;
   font-weight: 400;
   src: local("Material Icons"),
-    url("../../src/fonts/MaterialIcons/MaterialIcons-Regular.woff2")
-      format("woff2");
+    url("../fonts/MaterialIcons/MaterialIcons-Regular.woff2") format("woff2");
   font-display: block;
 }
 
@@ -63,6 +52,11 @@
   background: var(--color-separate);
 }
 
+* {
+  outline-color: #0c82627f;
+  // outline: 0;
+}
+
 html,
 body,
 #app {
@@ -73,9 +67,11 @@ body,
 body {
   color: var(--color-text);
   font-size: 16px;
-  font-family: "HarmonyOS Sans", "Noto Sans JP", sans-serif;
+  font-family: "HarmonyOS Sans", "Noto Sans JP", "Hiragino Sans",
+    "Hiragino Kaku Gothic ProN", "メイリオ", "Meiryo", sans-serif;
   background-color: var(--color-back);
-  accent-color: var(--color-accent);
+  accent-color: #0c82627f;
+  overflow-y: scroll;
 }
 
 i {
@@ -116,6 +112,11 @@ button {
 
     &:disabled {
       background-color: var(--color-back-mute);
+    }
+
+    &:where(:hover, :focus) {
+      outline: 0;
+      background-color: #0a7055;
     }
   }
 }
@@ -212,13 +213,26 @@ button {
   grid-template-columns: 1fr 3rem;
 
   > input[type="search"] {
+    grid-column: 1;
+    grid-row: 1;
     height: 3rem;
-    padding: 0 1rem;
+    padding: 0 2rem 0 1rem;
     background-color: var(--color-fore);
     border-radius: var(--base-radius) 0 0 var(--base-radius);
+    &::-webkit-search-cancel-button {
+      -webkit-appearance: none;
+    }
   }
 
-  > button {
+  > .clear {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: end;
+    margin-right: 0.5rem;
+    color: var(--color-text-mute);
+  }
+
+  > .search {
     margin: 0;
     display: flex;
     justify-content: center;
@@ -230,6 +244,11 @@ button {
 
     &:disabled {
       background-color: var(--color-back-mute);
+    }
+
+    &:where(:hover, :focus) {
+      outline: 0;
+      background-color: #0a7055;
     }
   }
 }
@@ -271,7 +290,8 @@ button {
     z-index: 1;
   }
 
-  > label {
+  > button {
+    width: 100%;
     padding: 1rem;
     display: grid;
     grid-template:
@@ -280,8 +300,9 @@ button {
     column-gap: 1rem;
     position: relative;
     user-select: none;
+    color: initial;
 
-    + label::before {
+    + button::before {
       content: "";
       position: absolute;
       top: -0.5px;
@@ -316,6 +337,13 @@ button {
       display: none;
     }
   }
+}
+
+.error_container {
+  padding: 1rem;
+  background-color: var(--color-fore);
+  border-radius: var(--base-radius);
+  text-align: center;
 }
 
 .block_progress {
