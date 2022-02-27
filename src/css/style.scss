@@ -319,6 +319,10 @@ button {
       grid-area: p;
     }
 
+    .username {
+      line-break: anywhere;
+    }
+
     .description {
       display: -webkit-box;
       -webkit-line-clamp: 3;
@@ -326,6 +330,7 @@ button {
       overflow: hidden;
       font-size: 0.8em;
       line-height: 1.3rem;
+      line-break: anywhere;
     }
 
     .check {

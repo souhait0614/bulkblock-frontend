@@ -155,7 +155,7 @@
                   )
                 )
               )
-            : await post("blocker.hmpf.club/block?id=" + id)
+            : await post("/block?id=" + id)
           const { ok, statusText } = data
           result[id] = {
             data: data.ok ? await data.json() : undefined,
@@ -235,7 +235,7 @@
       class="search"
       disabled={localDebug
         ? creating || blocking
-        : searchText === "" || creating || blocking}
+        : searchText.trim() === "" || creating || blocking}
     >
       <i>search</i>
     </button>
