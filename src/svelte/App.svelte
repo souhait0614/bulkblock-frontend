@@ -16,8 +16,8 @@
   const url = new URL(location.href)
 
   if (url.searchParams.has("logout")) {
-    document.cookie = "access_token=;max-age=-1;"
-    document.cookie = "access_token_secret=;max-age=-1;"
+    document.cookie = "access_token=;path=/;max-age=-1;"
+    document.cookie = "access_token_secret=;path=/;max-age=-1;"
     location.href = location.origin + location.pathname
   }
 </script>
