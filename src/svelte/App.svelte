@@ -16,8 +16,9 @@
   const url = new URL(location.href)
 
   if (url.searchParams.has("logout")) {
-    document.cookie = "access_token=;path=/;max-age=-1;"
-    document.cookie = "access_token_secret=;path=/;max-age=-1;"
+    const domain = location.host === "hisubway.online" ? "domain=.hisubway.online;" : ""
+    document.cookie = "access_token=;"+domain+"path=/;max-age=-1;"
+    document.cookie = "access_token_secret=;"+domain+"path=/;max-age=-1;"
     location.href = location.origin + location.pathname
   }
 </script>
