@@ -217,9 +217,11 @@
   {/if}
   {#if promiseUsers !== null}
     {#await promiseUsers then users}
-      <div class="users_count" transition:slide={duration}>
-        <span>{Object.keys(users).length}</span>人見つかりました
-      </div>
+      {#if Object.keys(users).length}
+        <div class="users_count" transition:slide={duration}>
+          <span>{Object.keys(users).length}</span>人見つかりました
+        </div>
+      {/if}
     {/await}
   {/if}
   <form
@@ -241,7 +243,7 @@
     </button>
     {#if searchText}
       <button
-      transition:fade={duration}
+        transition:fade={duration}
         class="clear"
         on:click={(e) => {
           e.preventDefault()
@@ -275,88 +277,97 @@
     </div>
     {#if promiseUsers !== null}
       {#await promiseUsers then users}
-        {(() => {
-          selectedUsers = Object.values(users).filter(
-            ({ cheched }) => cheched
-          ).length
-          return ""
-        })()}
-        <div class="users_container" transition:fade={duration}>
-          <header>
-            <span>
-              {#key selectedUsers}
-                <span in:fade={duration}>{selectedUsers}</span>
-              {/key}
+        {#if Object.keys(users).length}
+          {(() => {
+            selectedUsers = Object.values(users).filter(
+              ({ cheched }) => cheched
+            ).length
+            return ""
+          })()}
+          <div class="users_container" transition:fade={duration}>
+            <header>
               <span>
-                / {Object.keys(users).length} 人を選択済み
+                {#key selectedUsers}
+                  <span in:fade={duration}>{selectedUsers}</span>
+                {/key}
+                <span>
+                  / {Object.keys(users).length} 人を選択済み
+                </span>
               </span>
-            </span>
-            {#if Object.values(users).some(({ cheched }) => !cheched)}
-              <button
-                on:click={() => {
-                  Object.keys(users).forEach((key) => {
-                    users[key].cheched = true
-                  })
-                }}
-              >
-                <i>done_all</i>
-              </button>
-            {:else}
-              <button
-                on:click={() => {
-                  Object.keys(users).forEach((key) => {
-                    users[key].cheched = false
-                  })
-                }}
-              >
-                <i>remove_done</i>
-              </button>
-            {/if}
-          </header>
-          {#each Object.values(users) as { data, cheched }}
-            {#if isFullUser(data)}
-              <button
-                on:click={() => (cheched = !cheched)}
-                on:focus={(e) => {
-                  const elem = e.currentTarget
-                  const clientTop = elem.getBoundingClientRect().top
-                  const topCoverClientHeight = 16 * 5
-                  const usersContainerClientHeight = 16 * 2 + 22
-                  if (
-                    clientTop <=
-                    topCoverClientHeight + usersContainerClientHeight
-                  )
-                    window.scrollTo(
-                      0,
-                      window.pageYOffset + clientTop - window.innerHeight / 1.5
-                    )
-                }}
-              >
-                <img
-                  loading="lazy"
-                  src={data.profile_image_url_https}
-                  alt={data.screen_name}
-                />
-                <span class="username">
-                  {data.name}
-                  <a
-                    href={"https://twitter.com/" + data.screen_name}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    @{data.screen_name}
-                  </a>
-                </span>
-                <span class="description">
-                  {data.description}
-                </span>
-                <i class="check"
-                  >{cheched ? "check_box" : "check_box_outline_blank"}</i
+              {#if Object.values(users).some(({ cheched }) => !cheched)}
+                <button
+                  on:click={() => {
+                    Object.keys(users).forEach((key) => {
+                      users[key].cheched = true
+                    })
+                  }}
                 >
-              </button>
-            {/if}
-          {/each}
-        </div>
+                  <i>done_all</i>
+                </button>
+              {:else}
+                <button
+                  on:click={() => {
+                    Object.keys(users).forEach((key) => {
+                      users[key].cheched = false
+                    })
+                  }}
+                >
+                  <i>remove_done</i>
+                </button>
+              {/if}
+            </header>
+            {#each Object.values(users) as { data, cheched }}
+              {#if isFullUser(data)}
+                <button
+                  on:click={() => (cheched = !cheched)}
+                  on:focus={(e) => {
+                    const elem = e.currentTarget
+                    const clientTop = elem.getBoundingClientRect().top
+                    const topCoverClientHeight = 16 * 5
+                    const usersContainerClientHeight = 16 * 2 + 22
+                    if (
+                      clientTop <=
+                      topCoverClientHeight + usersContainerClientHeight
+                    )
+                      window.scrollTo(
+                        0,
+                        window.pageYOffset +
+                          clientTop -
+                          window.innerHeight / 1.5
+                      )
+                  }}
+                >
+                  <img
+                    loading="lazy"
+                    src={data.profile_image_url_https}
+                    alt={data.screen_name}
+                  />
+                  <span class="username">
+                    {data.name}
+                    <a
+                      href={"https://twitter.com/" + data.screen_name}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      @{data.screen_name}
+                    </a>
+                  </span>
+                  <span class="description">
+                    {data.description}
+                  </span>
+                  <i class="check"
+                    >{cheched ? "check_box" : "check_box_outline_blank"}</i
+                  >
+                </button>
+              {/if}
+            {/each}
+          </div>
+        {:else}
+          <p class="error_container" transition:slide={duration}>
+            対象のユーザーが見つかりませんでした。<br
+            />別の検索ワードをお試しください。
+          </p>
+        {/if}
       {:catch error}
         <p class="error_container" transition:slide={duration}>
           エラーが発生しました。<br />しばらくしてからもう一度お試しください。

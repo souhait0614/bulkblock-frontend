@@ -18,7 +18,7 @@
   if (url.searchParams.has("logout")) {
     document.cookie = "access_token=;max-age=-1;"
     document.cookie = "access_token_secret=;max-age=-1;"
-    location.href = location.origin
+    location.href = location.origin + location.pathname
   }
 </script>
 
