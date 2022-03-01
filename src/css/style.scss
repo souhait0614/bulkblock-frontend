@@ -104,11 +104,11 @@ button {
     outline: 0;
 
     &:disabled {
-      background-color: var(--color-back-mute);
+      filter: grayscale(100%);
     }
 
     &:where(:active, :focus) {
-      filter: brightness(0.8);
+      filter: brightness(0.7);
     }
   }
 }
@@ -235,11 +235,11 @@ button {
     border-radius: 0 var(--base-radius) var(--base-radius) 0;
     outline: 0;
     &:disabled {
-      background-color: var(--color-back-mute);
+      filter: grayscale(100%);
     }
 
     &:where(:active, :focus) {
-      filter: brightness(0.8);
+      filter: brightness(0.7);
     }
   }
 }

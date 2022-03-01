@@ -21,6 +21,6 @@
   <a class="block" {href}>Twitterでログイン</a>
 </main>
 <footer>
-  <iframe src={footerUrl} title="footer" />
+  <iframe loading="lazy" src={footerUrl} title="footer" />
 </footer>
 <iframe src={sideUrl} title="side" />
