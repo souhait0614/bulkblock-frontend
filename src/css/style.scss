@@ -22,7 +22,7 @@
   --color-fore: #ffffff;
   --color-back: #f1f3f5;
   --color-back-mute: rgba(0, 0, 0, 0.1);
-  --color-accent: #0c8262;
+  --color-accent: #64bb5c;
   --color-text: #202020;
   --color-text-mute: #9e9e9e;
   --color-separate: #00000033;
@@ -30,14 +30,6 @@
 
   --base-size: 44px;
   --base-radius: calc(var(--base-size) / 4);
-
-  &.dark {
-    --color-fore: #202020;
-    --color-back: #000000;
-    --color-accent: #0c8262;
-    --color-text: #ffffff;
-    --color-text-mute: #9e9e9e;
-  }
 }
 
 ::-webkit-scrollbar {
@@ -53,7 +45,7 @@
 }
 
 * {
-  outline-color: #0c82627f;
+  outline-color: #64bb5c7f;
   // outline: 0;
 }
 
@@ -70,7 +62,7 @@ body {
   font-family: "HarmonyOS Sans", "Noto Sans JP", "Hiragino Sans",
     "Hiragino Kaku Gothic ProN", "メイリオ", "Meiryo", sans-serif;
   background-color: var(--color-back);
-  accent-color: #0c82627f;
+  accent-color: #64bb5c7f;
   overflow-y: scroll;
 }
 
@@ -107,16 +99,16 @@ button {
     align-items: center;
     color: #fff;
     background-color: var(--color-accent);
-    transition: background-color 0.3s ease-in-out;
+    transition: filter 0.3s ease-in-out;
     border-radius: var(--base-radius);
+    outline: 0;
 
     &:disabled {
       background-color: var(--color-back-mute);
     }
 
-    &:where(:hover, :focus) {
-      outline: 0;
-      background-color: #0a7055;
+    &:where(:active, :focus) {
+      filter: brightness(0.8);
     }
   }
 }
@@ -239,16 +231,15 @@ button {
     align-items: center;
     color: #fff;
     background-color: var(--color-accent);
-    transition: background-color 0.3s ease-in-out;
+    transition: filter 0.3s ease-in-out;
     border-radius: 0 var(--base-radius) var(--base-radius) 0;
-
+    outline: 0;
     &:disabled {
       background-color: var(--color-back-mute);
     }
 
-    &:where(:hover, :focus) {
-      outline: 0;
-      background-color: #0a7055;
+    &:where(:active, :focus) {
+      filter: brightness(0.8);
     }
   }
 }
