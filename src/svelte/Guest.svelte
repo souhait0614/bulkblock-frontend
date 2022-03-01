@@ -9,14 +9,39 @@
 </script>
 
 <main id="guest">
+  <a
+    class="hisubway"
+    href="https://hisubway.online"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <img
+      src="https://hisubway.online/transfer/hisubway/img/favicon_512.png"
+      alt="HiSubway"
+    /></a
+  >
   <div>
     <h1>BulkBlock</h1>
-    <p>
-      アプリの説明を入力アプリの説明を入力アプリの説明を入力アプリの説明を入力アプリの説明を入力アプリの説明を入力
-    </p>
-    <p>
-      アプリの説明を入力アプリの説明を入力アプリの説明を入力アプリの説明を入力アプリの説明を入力アプリの説明を入力
-    </p>
+    <section>
+      <h2>About</h2>
+      <p>
+        キーワードをTwitterで検索し、見つかったアカウントを一括ブロックできるツールです。使い方は、<a
+          href="articles/bulkblock/help/"
+          target="_blank"
+          rel="noopener noreferrer">BulkBlockの使い方</a
+        >をお読みください。
+      </p>
+      <p>
+        特定のアカウントにリプライをしているアカウント、特定のツイートを引用しているアカウント、Botを使ってスパムツイートをしているアカウントなど、詳細な絞り込みも可能です。詳しくは<a
+          href="articles/bulkblock/commands/"
+          target="_blank"
+          rel="noopener noreferrer">検索コマンドについて</a
+        >から。
+      </p>
+      <p>
+        このツールでは、Twitterアカウントによる認証が必要です。ツイートやフォローの権限が要求されますが、このツールではブロック以外の操作はしません。
+      </p>
+    </section>
   </div>
   <a class="block" {href}>Twitterでログイン</a>
 </main>

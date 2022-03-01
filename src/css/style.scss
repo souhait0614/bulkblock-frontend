@@ -119,6 +119,17 @@ button {
 }
 
 #guest {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+  > .hisubway {
+    display: block;
+    align-self: end;
+    > img {
+      width: 3rem;
+      height: 3rem;
+    }
+  }
   > div {
     padding: 1rem;
     background-color: var(--color-fore);
@@ -128,9 +139,14 @@ button {
       font-size: 2em;
     }
 
-    > p {
-      text-align: justify;
-      margin-top: 1rem;
+    > section {
+      > h2 {
+        display: none;
+      }
+      > p {
+        text-align: justify;
+        margin-top: 1rem;
+      }
     }
   }
 }
