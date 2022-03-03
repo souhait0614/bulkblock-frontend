@@ -232,7 +232,7 @@
     }}
   >
     <!-- svelte-ignore a11y-autofocus -->
-    <input type="search" bind:value={searchText} autofocus />
+    <input type="text" bind:value={searchText} autofocus />
     <button
       class="search"
       disabled={localDebug
