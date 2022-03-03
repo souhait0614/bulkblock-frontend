@@ -220,7 +220,7 @@ button {
   height: 3rem;
   grid-template-columns: 1fr 3rem;
 
-  > input[type="search"] {
+  > input[type="text"] {
     grid-column: 1;
     grid-row: 1;
     height: 3rem;
