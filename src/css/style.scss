@@ -102,6 +102,11 @@ button {
     transition: filter 0.3s ease-in-out;
     border-radius: var(--base-radius);
     outline: 0;
+    user-select: none;
+
+    > span {
+      user-select: none;
+    }
 
     &:disabled {
       filter: grayscale(100%);

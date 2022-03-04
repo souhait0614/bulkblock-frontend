@@ -26,14 +26,14 @@
       <h2>About</h2>
       <p>
         キーワードをTwitterで検索し、見つかったアカウントを一括ブロックできるツールです。使い方は、<a
-          href="articles/bulkblock/help/"
+          href="https://hisubway.online/articles/bulkblock/help"
           target="_blank"
           rel="noopener noreferrer">BulkBlockの使い方</a
         >をお読みください。
       </p>
       <p>
         特定のアカウントにリプライをしているアカウント、特定のツイートを引用しているアカウント、Botを使ってスパムツイートをしているアカウントなど、詳細な絞り込みも可能です。詳しくは<a
-          href="articles/bulkblock/commands/"
+          href="https://hisubway.online/articles/bulkblock/commands"
           target="_blank"
           rel="noopener noreferrer">検索コマンドについて</a
         >から。
@@ -43,7 +43,7 @@
       </p>
     </section>
   </div>
-  <a class="block" {href}>Twitterでログイン</a>
+  <a class="block" {href}><span>Twitterでログイン</span></a>
 </main>
 <footer>
   <iframe loading="lazy" src={footerUrl} title="footer" />
