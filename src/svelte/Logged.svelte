@@ -348,6 +348,9 @@
                       href={"https://twitter.com/" + data.screen_name}
                       target="_blank"
                       rel="noopener noreferrer"
+                      on:click={(e)=>{
+                        e.stopPropagation()
+                      }}
                     >
                       @{data.screen_name}
                     </a>

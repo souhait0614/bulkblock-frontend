@@ -129,7 +129,7 @@ button {
   row-gap: 1rem;
   > .hisubway {
     display: block;
-    align-self: end;
+    margin-left: auto;
     > img {
       width: 3rem;
       height: 3rem;
@@ -235,12 +235,18 @@ button {
     &::-webkit-search-cancel-button {
       -webkit-appearance: none;
     }
+    outline: 0;
+    &:focus {
+      border: 3px solid #64bb5c7f;
+      padding: 0 calc(2rem - 3px) 0 calc(1rem - 3px);
+    }
   }
 
   > .clear {
     grid-column: 1;
     grid-row: 1;
     justify-self: end;
+    align-self: center;
     margin-right: 0.5rem;
     color: var(--color-text-mute);
   }
