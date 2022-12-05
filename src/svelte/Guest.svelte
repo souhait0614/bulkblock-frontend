@@ -5,7 +5,7 @@
 
   let href = "/login"
   if (location.host === "hisubway.online")
-    href = "http://bulkblock.hisubway.online/login?hisubway=true"
+    href = "http://bb.hisubway.online/login?hisubway=true"
 </script>
 
 <main id="guest">
